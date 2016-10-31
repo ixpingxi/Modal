@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+
+<ul class="md1">
+    <li class="toggle" >Toggle</li>
+    <li class="open" >Open</li>
+    <li class="close" >Close</li>
+    <li class="create" >Create</li>
+    <li class="remove" >Remove</li>
+</ul>
+
+
+<ul class="md2">
+    <li class="toggle" >Toggle</li>
+    <li class="open" >Open</li>
+    <li class="close" >Close</li>
+    <li class="create" >Create</li>
+    <li class="remove" >Remove</li>
+</ul>
+
+
+
+<script>
+
+    function Modal(data){
+        this.data = data;
+        this.created = 0;
+        this.element = null;
+    }
+
+
+    Modal.prototype.close = function(){
+        this.element.classList.remove('active');
+        document.body.classList.remove('disable-scroll');
+    };
+
+    Modal.prototype.open = function(){
+        this.element.classList.add('active');
+        document.body.classList.add('disable-scroll');
+        this.element.style.display=null;
+
+    };
+
+    Modal.prototype.toggle = function(){
+        this.element.classList.toggle('active');
+        document.body.classList.toggle('disable-scroll');
+        this.element.style.display=null;
+    };
+
+    Modal.prototype.remove = function(){
+        var elem = this.element;
+        elem.parentNode.removeChild(elem);
+        this.created = 0;
+        this.element = null;
+    };
+
+    Modal.prototype.create = function(){
+        if(this.created == 0){
+        //Create Bottom Sheet
+        var s = '<span class="overlay-close"></span>' +
+                '<div class="wrap">' +
+                '<div class="body">'+this.data+'</div>' +
+                '<span class="ico ico-close close">Close</span>' +
+                '</div>' +
+                ''; // HTML string
+        this.element = document.createElement('md-modal');
+        this.element.id = '';
+        this.element.style.display = 'none';
+        this.element.className ='modal';
+        this.element.innerHTML = s;
+
+        //Set Close Overlay
+        this.element.querySelector('.overlay-close').addEventListener("click", function() {
+            //closeModal();
+            this.parentNode.classList.remove('active');
+            document.body.classList.remove('disable-scroll');
+        });
+
+        this.element.querySelector('.close').addEventListener("click", function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            this.parentNode.parentNode.classList.remove('active');
+            document.body.classList.remove('disable-scroll');
+        });
+
+            this.element.addEventListener("animationend",function(e){
+                if(!this.classList.contains('active')){
+                    this.style.display = 'none';
+                }
+            },false);
+
+
+        //Append To Body
+        document.body.appendChild(this.element);
+        this.created = 1;
+
+
+
+        }
+    };
+
+
+/////////////// Test ///////////////
+
+   var  modal_data = '<a class="modal-title" onclick="Test_Modal.close()">111</a> testets';
+    var Test_Modal = new Modal(modal_data);
+    Test_Modal.create()
+
+    var  modal_data2 = '<h2 class="modal-title" onclick="Test_Modal2.close()">222</h2> testets';
+    var Test_Modal2 = new Modal(modal_data2);
+    Test_Modal2.create()
+
+    //console.log(modal());
+    document.querySelector('.md1 .toggle').addEventListener("click", function(){Test_Modal.toggle();});
+    document.querySelector('.md1 .open').addEventListener("click", function(){Test_Modal.open();});
+    document.querySelector('.md1 .close').addEventListener("click", function(){Test_Modal.close();});
+    document.querySelector('.md1 .create').addEventListener("click", function(){Test_Modal.create();});
+    document.querySelector('.md1 .remove').addEventListener("click", function(){Test_Modal.remove();});
+
+    document.querySelector('.md2 .toggle').addEventListener("click", function(){Test_Modal2.toggle();});
+    document.querySelector('.md2 .open').addEventListener("click", function(){Test_Modal2.open();});
+    document.querySelector('.md2 .close').addEventListener("click", function(){Test_Modal2.close();});
+    document.querySelector('.md2 .create').addEventListener("click", function(){Test_Modal2.create();});
+    document.querySelector('.md2 .remove').addEventListener("click", function(){Test_Modal2.remove();});
+
+</script>
+
+</body>
+</html>
